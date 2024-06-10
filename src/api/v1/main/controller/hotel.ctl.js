@@ -98,7 +98,8 @@ class HotelCTL {
     async (req, res, next) => {
       try {
         const idHotel = parseInt(req.params.idHotel);
-        const roomClasses = await HotelSV.getAllRoomClassess(idHotel);
+        const type = req.query.type;
+        const roomClasses = await HotelSV.getAllRoomClassess(idHotel, type);
         res.json(RES.Oke.setData(roomClasses));
       } catch (error) {
         next(error);

@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const DBConfig = require("../../config/db.config");
 const SQLZConfig = require("../../config/sequelize.config");
 const DataHelper = require("../../helper/data.helper");
@@ -39,25 +40,48 @@ class HotelSV {
 
     return result;
   }
-  static async getAllRoomClassess(idHotel) {
-    return await RoomCLETT.findAll({
-      include: [
-        {
-          model: HtRclETT,
-          attributes: [],
-          required: true,
-          include: [
-            {
-              model: HotelETT,
-              attributes: [],
-              where: {
-                id: idHotel,
+  static async getAllRoomClassess(idHotel, type) {
+    if (type == "not-have") {
+      return await RoomCLETT.findAll({
+        include: [
+          {
+            model: HtRclETT,
+            attributes: [],
+            required: false,
+            include: [
+              {
+                model: HotelETT,
+                attributes: [],
+                where: {
+                  id: {
+                    [Op.ne]: idHotel,
+                  },
+                },
               },
-            },
-          ],
-        },
-      ],
-    });
+            ],
+          },
+        ],
+      });
+    } else {
+      return await RoomCLETT.findAll({
+        include: [
+          {
+            model: HtRclETT,
+            attributes: [],
+            required: true,
+            include: [
+              {
+                model: HotelETT,
+                attributes: [],
+                where: {
+                  id: idHotel,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    }
   }
   static async mapHotelRoomClass(idHotel, idRoomClass, roomPrice) {
     return await HtRclETT.create({
@@ -245,6 +269,11 @@ class HotelSV {
           },
         },
       ],
+    });
+  }
+  static async getUserHotels(idUser) {
+    return await HotelETT.findAll({
+      where: { idUser: idUser },
     });
   }
 }
