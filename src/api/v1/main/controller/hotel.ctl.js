@@ -79,6 +79,7 @@ class HotelCTL {
         const hotels = await HotelSV.getAllHotels(page, filter, idCommune);
         res.json(RES.Oke.setData(hotels));
       } catch (error) {
+        console.log(error);
         next(error);
       }
     },
@@ -127,6 +128,36 @@ class HotelCTL {
         const idHotel = parseInt(req.params.idHotel);
         const rooms = await HotelSV.getHotelRooms(idHotel);
         res.json(RES.Oke.setData(rooms));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
+  static getHotelsNear = [
+    async (req, res, next) => {
+      try {
+        const idHotel = parseInt(req.params.idHotel);
+        const page = parseInt(req.query.page);
+        const rooms = await HotelSV.getHotelsNear(idHotel, page);
+        res.json(RES.Oke.setData(rooms));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
+  static updateHotel = [
+    async (req, res, next) => {
+      try {
+        const idHotel = parseInt(req.params.idHotel);
+        const { name, description, hotline, idCommune } = req.body;
+        const hotel = await HotelSV.updateHotel(
+          idHotel,
+          name,
+          description,
+          hotline,
+          idCommune
+        );
+        res.json(RES.Oke.setData(hotel));
       } catch (error) {
         next(error);
       }

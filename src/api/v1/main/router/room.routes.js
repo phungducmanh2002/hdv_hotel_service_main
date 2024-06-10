@@ -5,6 +5,7 @@ const router = Router();
 
 router.get("/:idRoom/room-class", RoomCTL.getRoomClass);
 router.get("/:idRoom/room-price", RoomCTL.getRoomPrice);
+router.put("/:idRoom", RoomCTL.updateRoom);
 
 class RoomRT {
   static router = router;

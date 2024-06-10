@@ -24,6 +24,18 @@ class RoomCTL {
       }
     },
   ];
+  static updateRoom = [
+    async (req, res, next) => {
+      try {
+        const idRoom = parseInt(req.params.idRoom);
+        const { name, idHotelRoomClass } = req.body;
+        const room = await RoomSV.updateRoom(idRoom, name, idHotelRoomClass);
+        res.json(RES.Oke.setData(room));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
 }
 
 module.exports = RoomCTL;

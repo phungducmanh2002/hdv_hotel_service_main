@@ -18,6 +18,10 @@ router.get(
   HotelCTL.getHotelRoomclassRooms
 );
 router.get("/:idHotel/rooms", HotelCTL.getHotelRooms);
+router.get("/:idHotel/near", HotelCTL.getHotelsNear);
+
+// udpate hotel
+router.put("/:idHotel", HotelCTL.updateHotel);
 
 class HotelRT {
   static router = router;

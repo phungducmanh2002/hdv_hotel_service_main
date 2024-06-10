@@ -35,6 +35,16 @@ class RoomSV {
       ],
     });
   }
+  static async updateRoom(idRoom, name, idHotelRoomClass) {
+    return await RoomETT.update(
+      { name: name, idHotelRoomClass: idHotelRoomClass },
+      {
+        where: {
+          id: idRoom,
+        },
+      }
+    );
+  }
 }
 
 module.exports = RoomSV;

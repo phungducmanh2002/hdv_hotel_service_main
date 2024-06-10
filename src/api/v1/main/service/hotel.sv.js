@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const DBConfig = require("../../config/db.config");
 const SQLZConfig = require("../../config/sequelize.config");
 const DataHelper = require("../../helper/data.helper");
@@ -210,8 +210,8 @@ class HotelSV {
     if (hotelRCLSDtos.length == 0) {
       return null;
     }
-    const min = hotelRCLSDtos[0].roomPrice;
-    const max = hotelRCLSDtos[0].roomPrice;
+    let min = hotelRCLSDtos[0].roomPrice;
+    let max = hotelRCLSDtos[0].roomPrice;
     for (let i = 0; i < hotelRCLSDtos.length; i++) {
       const element = hotelRCLSDtos[i];
       if (element.roomPrice < min) {
@@ -243,11 +243,11 @@ class HotelSV {
     return hotelDto;
   }
   static async getHotelRoomclassRooms(idHotel, idRoomClass) {
-    return await RoomETT.findAll({
+    const rooms = await RoomETT.findAll({
       include: [
         {
           model: HtRclETT,
-          attributes: [],
+          attributes: ["roomPrice"],
           required: true,
           where: {
             idHotel: idHotel,
@@ -256,25 +256,101 @@ class HotelSV {
         },
       ],
     });
+
+    const roomsDto = [];
+    for (const room of rooms) {
+      const tmp = room.get({ plain: true });
+      roomsDto.push({
+        id: tmp.id,
+        name: tmp.name,
+        idHotelRoomClass: tmp.idHotelRoomClass,
+        roomPrice: tmp.HtRclETT.roomPrice,
+      });
+    }
+    return roomsDto;
   }
   static async getHotelRooms(idHotel) {
-    return await RoomETT.findAll({
+    const rooms = await RoomETT.findAll({
       include: [
         {
           model: HtRclETT,
           required: true,
-          attributes: [],
+          attributes: ["roomPrice"],
           where: {
             idHotel: idHotel,
           },
         },
       ],
     });
+
+    const roomsDto = [];
+    for (const room of rooms) {
+      const tmp = room.get({ plain: true });
+      roomsDto.push({
+        id: tmp.id,
+        name: tmp.name,
+        idHotelRoomClass: tmp.idHotelRoomClass,
+        roomPrice: tmp.HtRclETT.roomPrice,
+      });
+    }
+    return roomsDto;
   }
   static async getUserHotels(idUser) {
     return await HotelETT.findAll({
       where: { idUser: idUser },
     });
+  }
+  static async getHotelsNear(idHotel, page) {
+    const hotel = await HotelETT.findByPk(idHotel);
+    const pageSize = 20;
+    const options = {
+      attributes: ["id"],
+      where: {
+        idCommune: hotel.idCommune,
+        id: {
+          [Op.ne]: hotel.id,
+        },
+      },
+      include: [
+        {
+          model: HtRclETT,
+          attributes: [],
+          required: true,
+        },
+      ],
+    };
+    // if select by page
+    if (page) {
+      const offset = (page - 1) * pageSize;
+      options.limit = pageSize;
+      options.offset = offset;
+    }
+    const hotelsId = await HotelETT.findAll(options);
+    const ids = [];
+    for (let i = 0; i < hotelsId.length; i++) {
+      const element = hotelsId[i];
+      ids.push(element.get({ plain: true }));
+    }
+    const hotelsDto = [];
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i].id;
+      const hl = await HotelSV.getById(id);
+      hotelsDto.push(hl);
+    }
+    return hotelsDto;
+  }
+  static async updateHotel(idHotel, name, description, hotline, idCommune) {
+    return await HotelETT.update(
+      {
+        name: name,
+        description: description,
+        hotline: hotline,
+        idCommune: idCommune,
+      },
+      {
+        where: { id: idHotel },
+      }
+    );
   }
 }
 
