@@ -3,6 +3,9 @@ const RoomCLETT = require("../data/entity/rcl.ett");
 const RoomETT = require("../data/entity/room.ett");
 
 class RoomSV {
+  static async getRoom(idRoom) {
+    return await RoomETT.findByPk(idRoom);
+  }
   static async getRoomClass(idRoom) {
     return await RoomCLETT.findOne({
       include: [

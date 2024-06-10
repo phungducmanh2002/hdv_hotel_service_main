@@ -22,6 +22,10 @@ router.get("/:idHotel/near", HotelCTL.getHotelsNear);
 
 // udpate hotel
 router.put("/:idHotel", HotelCTL.updateHotel);
+router.put(
+  "/:idHotel/room-classes/:idRoomClass",
+  HotelCTL.updateHotelRoomClass
+);
 
 class HotelRT {
   static router = router;

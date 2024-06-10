@@ -163,6 +163,23 @@ class HotelCTL {
       }
     },
   ];
+  static updateHotelRoomClass = [
+    async (req, res, next) => {
+      try {
+        const idHotel = parseInt(req.params.idHotel);
+        const idRoomClass = parseInt(req.params.idRoomClass);
+        const { roomPrice } = req.body;
+        const hotel = await HotelSV.updateHotelRoomClass(
+          idHotel,
+          idRoomClass,
+          roomPrice
+        );
+        res.json(RES.Oke.setData(hotel));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
 }
 
 module.exports = HotelCTL;

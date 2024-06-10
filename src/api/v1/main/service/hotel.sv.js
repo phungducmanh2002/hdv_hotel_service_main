@@ -352,6 +352,17 @@ class HotelSV {
       }
     );
   }
+  static async updateHotelRoomClass(idHotel, idRoomClass, newRoomPrice) {
+    return await HtRclETT.update(
+      { roomPrice: newRoomPrice },
+      {
+        where: {
+          idHotel: idHotel,
+          idRoomClass: idRoomClass,
+        },
+      }
+    );
+  }
 }
 
 module.exports = HotelSV;

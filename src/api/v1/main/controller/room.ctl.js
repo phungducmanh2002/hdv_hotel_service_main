@@ -2,6 +2,17 @@ const RES = require("../payload/RES");
 const RoomSV = require("../service/room.sv");
 
 class RoomCTL {
+  static getRoom = [
+    async (req, res, next) => {
+      try {
+        const idRoom = req.params.idRoom;
+        const room = await RoomSV.getRoom(idRoom);
+        res.json(RES.Oke.setData(room));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
   static getRoomClass = [
     async (req, res, next) => {
       try {
