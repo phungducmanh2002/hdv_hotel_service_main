@@ -51,24 +51,17 @@ class HotelSV {
       );
       return roomClasses;
     } else {
-      return await RoomCLETT.findAll({
-        include: [
-          {
-            model: HtRclETT,
-            attributes: [],
-            required: true,
-            include: [
-              {
-                model: HotelETT,
-                attributes: [],
-                where: {
-                  id: idHotel,
-                },
-              },
-            ],
-          },
-        ],
-      });
+      const roomClasses = await SQLZConfig.SQLZInstance.query(
+        `SELECT id=rcl.id, [name]=rcl.[name], roomPrice=htrcl.roomPrice
+FROM (SELECT * FROM room_class WHERE id  in (SELECT idRoomClass FROM hotel_room_class WHERE idHotel = :idHotel)) as rcl
+INNER JOIN (SELECT * FROM hotel_room_class WHERE idHotel = :idHotel) as htrcl
+ON rcl.id = htrcl.idRoomClass`,
+        {
+          replacements: { idHotel: idHotel },
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      return roomClasses;
     }
   }
   static async mapHotelRoomClass(idHotel, idRoomClass, roomPrice) {
@@ -267,6 +260,13 @@ class HotelSV {
           where: {
             idHotel: idHotel,
           },
+          include: [
+            {
+              model: RoomCLETT,
+              required: true,
+              attributes: ["name"],
+            },
+          ],
         },
       ],
     });
@@ -279,6 +279,7 @@ class HotelSV {
         name: tmp.name,
         idHotelRoomClass: tmp.idHotelRoomClass,
         roomPrice: tmp.HtRclETT.roomPrice,
+        roomClassName: tmp.HtRclETT.RoomCLETT.name,
       });
     }
     return roomsDto;
