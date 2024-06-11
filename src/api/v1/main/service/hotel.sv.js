@@ -1,4 +1,4 @@
-const { Op, where } = require("sequelize");
+const { Op, where, Sequelize } = require("sequelize");
 const DBConfig = require("../../config/db.config");
 const SQLZConfig = require("../../config/sequelize.config");
 const DataHelper = require("../../helper/data.helper");
@@ -42,26 +42,14 @@ class HotelSV {
   }
   static async getAllRoomClassess(idHotel, type) {
     if (type == "not-have") {
-      return await RoomCLETT.findAll({
-        include: [
-          {
-            model: HtRclETT,
-            attributes: [],
-            required: false,
-            include: [
-              {
-                model: HotelETT,
-                attributes: [],
-                where: {
-                  id: {
-                    [Op.ne]: idHotel,
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      });
+      const roomClasses = await SQLZConfig.SQLZInstance.query(
+        "SELECT * FROM room_class WHERE id not in (SELECT idRoomClass FROM hotel_room_class WHERE idHotel = :idHotel)",
+        {
+          replacements: { idHotel: idHotel },
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      return roomClasses;
     } else {
       return await RoomCLETT.findAll({
         include: [
