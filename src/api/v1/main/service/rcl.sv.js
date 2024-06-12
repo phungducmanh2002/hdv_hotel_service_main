@@ -8,6 +8,10 @@ class RoomCLSV {
   static async getAllRoomClasses() {
     return await RoomCLETT.findAll();
   }
+
+  static async getRoomClassById(idRoomClass) {
+    return await RoomCLETT.findByPk(idRoomClass);
+  }
 }
 
 module.exports = RoomCLSV;

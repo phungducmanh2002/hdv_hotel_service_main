@@ -5,6 +5,7 @@ const router = Router();
 
 router.post("", RCLCTL.createRoomClass);
 router.get("", RCLCTL.getAllRoomClasses);
+router.get("/:idRoomClass", RCLCTL.getRoomClassById);
 
 class RCLRT {
   static router = router;

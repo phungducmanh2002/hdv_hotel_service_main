@@ -23,6 +23,17 @@ class RCLCTL {
       }
     },
   ];
+  static getRoomClassById = [
+    async (req, res, next) => {
+      try {
+        const idRoomClass = parseInt(req.params.idRoomClass);
+        const roomClass = await RoomCLSV.getRoomClassById(idRoomClass);
+        res.json(RES.Oke.setData(roomClass));
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
 }
 
 module.exports = RCLCTL;
