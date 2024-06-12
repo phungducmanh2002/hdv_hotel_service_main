@@ -6,6 +6,7 @@ const HotelRT = require("./hotel.routes");
 const RoomRT = require("./room.routes");
 const CMNRT = require("./commune.routes");
 const UserRT = require("./user.routes");
+const HtrclRT = require("./htrcl.routes");
 const router = Router();
 
 router.use("/room-classes", RCLRT.router);
@@ -13,6 +14,7 @@ router.use("/hotels", HotelRT.router);
 router.use("/rooms", RoomRT.router);
 router.use("/communes", CMNRT.router);
 router.use("/users", UserRT.router);
+router.use("/hotel-room-class", HtrclRT.router);
 
 router.use(EXMDW.handleErr);
 
