@@ -38,7 +38,7 @@ services:
       DB_NAME: db_hotel
       DB_USER: sa
       DB_PASS: 1
-      DB_GEN: 1
+      DB_GEN: 0
 
 networks:
   hdv_network:
