@@ -1,6 +1,7 @@
 const HtRclETT = require("../data/entity/ht.rcl.ett");
 const RoomCLETT = require("../data/entity/rcl.ett");
 const RoomETT = require("../data/entity/room.ett");
+const RES = require("../payload/RES");
 
 class RoomSV {
   static async getRoom(idRoom) {
@@ -38,9 +39,20 @@ class RoomSV {
       ],
     });
   }
-  static async updateRoom(idRoom, name, idHotelRoomClass) {
+  static async updateRoom(idRoom, name, idHotel, idRoomClass) {
+    const htrcl = await HtRclETT.findOne({
+      where: {
+        idHotel: idHotel,
+        idRoomClass: idRoomClass,
+      },
+    });
+    if (!htrcl) {
+      return new Promise((resolve, reject) => {
+        reject(RES.NotFound.setMessage("không tìm thấy hotel room class"));
+      });
+    }
     return await RoomETT.update(
-      { name: name, idHotelRoomClass: idHotelRoomClass },
+      { name: name, idHotelRoomClass: htrcl.id },
       {
         where: {
           id: idRoom,
