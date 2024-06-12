@@ -51,11 +51,24 @@ class HotelSV {
       );
       return roomClasses;
     } else {
+      //       const roomClasses = await SQLZConfig.SQLZInstance.query(
+      //         `SELECT id=rcl.id, [name]=rcl.[name], roomPrice=htrcl.roomPrice
+      // FROM (SELECT * FROM room_class WHERE id  in (SELECT idRoomClass FROM hotel_room_class WHERE idHotel = :idHotel)) as rcl
+      // INNER JOIN (SELECT * FROM hotel_room_class WHERE idHotel = :idHotel) as htrcl
+      // ON rcl.id = htrcl.idRoomClass`,
+      //         {
+      //           replacements: { idHotel: idHotel },
+      //           type: Sequelize.QueryTypes.SELECT,
+      //         }
+      //       );
+      //       return roomClasses;
+
       const roomClasses = await SQLZConfig.SQLZInstance.query(
-        `SELECT id=rcl.id, [name]=rcl.[name], roomPrice=htrcl.roomPrice
-FROM (SELECT * FROM room_class WHERE id  in (SELECT idRoomClass FROM hotel_room_class WHERE idHotel = :idHotel)) as rcl
-INNER JOIN (SELECT * FROM hotel_room_class WHERE idHotel = :idHotel) as htrcl
-ON rcl.id = htrcl.idRoomClass`,
+        `SELECT rcl.id AS id, rcl.name AS name, htrcl.roomPrice AS roomPrice
+FROM (SELECT * FROM room_class WHERE id IN (SELECT idRoomClass FROM hotel_room_class WHERE idHotel = :idHotel)) AS rcl
+INNER JOIN (SELECT * FROM hotel_room_class WHERE idHotel = :idHotel) AS htrcl
+ON rcl.id = htrcl.idRoomClass;
+`,
         {
           replacements: { idHotel: idHotel },
           type: Sequelize.QueryTypes.SELECT,
